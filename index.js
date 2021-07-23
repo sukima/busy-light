@@ -1,10 +1,17 @@
 const parseDuration = require('parse-duration');
+const http = require('http');
+const https = require('https');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
+
+const httpPort = process.argv[2] ?? 3001;
+const httpsPort = httpPort - 1;
+const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert/server.key'), 'utf8');
+const certificate = fs.readFileSync(path.join(__dirname, 'sslcert/server.crt'), 'utf8');
 const app = express();
-const port = process.argv[2] ?? 3000;
 
 class StatusManager {
   MACHINE = {
@@ -73,6 +80,10 @@ app.get('/busy', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+http
+  .createServer(app)
+  .listen(httpPort, () => { console.log(`Listening on HTTP port ${httpPort}`); });
+
+https
+  .createServer({ key: privateKey, cert: certificate }, app)
+  .listen(httpsPort, () => { console.log(`Listening on HTTPS port ${httpsPort}`); });

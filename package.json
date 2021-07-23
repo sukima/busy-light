@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "gen-keys": "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./sslcert/server.key -out ./sslcert/server.crt"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
