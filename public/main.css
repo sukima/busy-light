@@ -2,32 +2,16 @@ html, body, main, p, button {
   padding: 0;
   margin: 0;
   font-size: 48px;
+  font-family: sans-serif;
 }
 
 button{
   padding: 0.5rem;
 }
 
-.big-text {
-  font-weight: bold;
-}
-
-.sub-text {
-  font-style: italic;
-}
-
-.status-busy,
-[data-state=active] .status-free {
-  display: none;
-}
-
-[data-state=active] .status-busy {
-  display: block;
-}
-
 main {
-  padding-bottom: 0;
-  height: 100vh;
+  padding-bottom: 2rem;
+  height: 99vh;
 }
 
 footer {
@@ -47,17 +31,18 @@ footer nav {
 }
 
 footer nav > button {
-  min-width: 100px;
+  padding: 0.5rem;
 }
 
 status-card {
   background-color: lightgreen;
-  display: hidden;
+  display: none;
   justify-content: center;
   align-items: center;
   margin: 0;
   min-height: 100%;
   min-width: 100%;
+  text-align: center;
 }
 
 status-card[data-state] {
@@ -67,3 +52,22 @@ status-card[data-state] {
 status-card[data-state=active] {
   background-color: salmon;
 }
+
+.status-busy,
+[data-state=active] .status-free {
+  display: none;
+}
+
+[data-state=active] .status-busy {
+  display: block;
+}
+
+.big-text {
+  font-weight: bold;
+  font-size: 3rem;
+}
+
+.sub-text {
+  font-style: italic;
+}
+
