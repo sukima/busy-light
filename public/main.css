@@ -1,0 +1,69 @@
+html, body, main, p, button {
+  padding: 0;
+  margin: 0;
+  font-size: 48px;
+}
+
+button{
+  padding: 0.5rem;
+}
+
+.big-text {
+  font-weight: bold;
+}
+
+.sub-text {
+  font-style: italic;
+}
+
+.status-busy,
+[data-state=active] .status-free {
+  display: none;
+}
+
+[data-state=active] .status-busy {
+  display: block;
+}
+
+main {
+  padding-bottom: 0;
+  height: 100vh;
+}
+
+footer {
+  background-color: lightblue;
+  width: 100%;
+  min-height: 2rem;
+  position: fixed;
+  padding: 0.5rem 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+footer nav {
+  display: flex;
+  justify-content: space-around;
+}
+
+footer nav > button {
+  min-width: 100px;
+}
+
+status-card {
+  background-color: lightgreen;
+  display: hidden;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+status-card[data-state] {
+  display: flex;
+}
+
+status-card[data-state=active] {
+  background-color: salmon;
+}

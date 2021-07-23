@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Am I Busy?</title>
+  <link rel="stylesheet" href="./main.css">
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <status-manager>
+    <main>
+      <status-card>
+        <div class="status-busy">
+          <p class="big-text">I am Busy</p>
+          <p class="sub-text">till about <time data-ref="experation"></time></p>
+        </div>
+        <div class="status-free">
+          <p class="big-text">I am Free</p>
+        </div>
+      </status-card>
+    </main>
+    <footer>
+      <nav>
+        <button type="button" data-action="activate-30m">&half; hour</button>
+        <button type="button" data-action="activate-1h">1 hour</button>
+        <button type="button" data-action="activate-2h">2 hour</button>
+        <button type="button" data-action="cancel">Not Busy</button>
+      </nav>
+    </footer>
+  </status-manager>
+</body>
+</html>
