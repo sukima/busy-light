@@ -1,5 +1,6 @@
 const parseDuration = require('parse-duration');
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
@@ -50,6 +51,8 @@ const payload = () => ({
 
 let expiration = 0;
 let statusManager = new StatusManager();
+
+app.use(cors());
 
 app.post('/busy', bodyParser.json(), (req, res) => {
   let duration = parseDuration(req.body.duration || -1, 'ms');
