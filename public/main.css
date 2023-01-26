@@ -25,13 +25,24 @@ footer {
   margin: 0;
 }
 
-footer nav {
+footer nav > * {
   display: flex;
   justify-content: space-around;
 }
 
-footer nav > button {
+footer nav > * + * {
+  margin-block-start: 0.5rem;
+}
+
+footer nav button {
   padding: 0.5rem;
+  background-color: gainsboro;
+  border: none;
+  border-radius: 0.2rem;
+}
+
+footer nav button:active {
+  background-color: gold;
 }
 
 status-card {
@@ -71,3 +82,26 @@ status-card[data-state=active] {
   font-style: italic;
 }
 
+input[type=checkbox] {
+  opacity: 0;
+  position: absolute;
+}
+
+input[type=checkbox] + label {
+  background-color: lightblue;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+}
+
+input[type=checkbox] + label::before {
+  content: '✗ ';
+}
+
+input[type=checkbox]:checked + label {
+  background-color: gainsboro;
+  text-decoration: underline;
+}
+
+input[type=checkbox]:checked + label::before {
+  content: '✓ ';
+}
