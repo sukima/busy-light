@@ -13,9 +13,15 @@ It uses a 1 second polling to make sure the app is up-to-date and it is "Add to 
 I installed this to my home network RaspberryPi.
 
 1. Clone this project
-2. Run `yarn`
-3. Generate SSL keys `yarn gen-keys`
-4. Start the server `yarn start`
+2. Run `npm install`
+3. Generate SSL keys `npm run gen-keys`
+4. Start the server `npm start`
+
+## Discord notifications
+
+Setting the `DISCORD_WEBHOOK` to your Discord [webhook](https://discord.com/developers/docs/resources/webhook) URL will send a Discord message every time the system is set to busy and remove it when not busy.
+
+Setting the `LIVE_URL` will include a link in the Discord message to that URL as (i.e. this server's static page).
 
 ## Technologies
 

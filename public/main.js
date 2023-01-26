@@ -77,10 +77,11 @@ class StatusManager extends Component {
   }
 
   activate(duration) {
+    let notify = $(this).notification.checked;
     return this.sendRequest({
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ duration })
+      body: JSON.stringify({ duration, notify })
     });
   }
 

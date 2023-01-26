@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 
+const discordWebhook = process.env.DISCORD_WEBHOOK;
+const liveSiteUrl = process.env.LIVE_URL;
 const httpPort = process.argv[2] ?? 3001;
 const httpsPort = httpPort - 1;
 const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert/server.key'), 'utf8');
@@ -45,8 +47,87 @@ class StatusManager {
   }
 }
 
+class Timer {
+  #timerRef;
+  start(delay, cb) {
+    this.stop();
+    this.#timerRef = setTimeout(cb, delay);
+  }
+  stop() {
+    clearTimeout(this.#timerRef);
+  }
+}
+
+class NullNotifier {
+  setBusy() {}
+  clearBusy() {}
+}
+
+class BusyNotifier {
+  constructor(notify, timer = new Timer()) {
+    this.timer = timer;
+    this.notify = notify;
+  }
+  setBusy(delay, { expiration, url }) {
+    let content = `I am **busy** till about ${formatTime(expiration)}`;
+    let embeds = [{
+      title: '“Am I Busy” live tracking',
+      description: 'Viewable in any browser at home only.',
+      url,
+    }];
+    this.notify.send({ content, ...(url ? { embeds } : {}) });
+    this.timer.start(delay, () => this.clearBusy());
+  }
+  clearBusy() {
+    this.timer.stop();
+    this.notify.retract();
+  }
+}
+
+class DiscordNotify {
+  constructor(url) {
+    this.url = url;
+  }
+  async send(payload) {
+    let url = new URL(this.url);
+    url.searchParams.append('wait', true);
+    console.log('sending webhook');
+
+    try {
+      let res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      let { id } = await res.json();
+      this.messageId = id;
+      console.log(`sent ${id}`);
+    } catch (error) {
+      console.log(error);
+      this.messageId = null;
+    }
+  }
+  async retract() {
+    if (!this.messageId) return;
+
+    let url = new URL(this.url);
+    url.pathname = path.join(url.pathname, 'messages', this.messageId);
+    this.messageId = null;
+
+    try {
+      await fetch(url, { method: 'DELETE' });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
 function transitionMachine(machine, state = machine.initial, event) {
   return machine.states[state].on?.[event] ?? machine.on?.[event] ?? state;
+}
+
+function formatTime(timestamp) {
+  return new Date(timestamp).toLocaleTimeString([], { timeStyle: 'short' });
 }
 
 const now = () => new Date().getTime();
@@ -58,6 +139,9 @@ const payload = () => ({
 
 let expiration = 0;
 let statusManager = new StatusManager();
+let notifier = discordWebhook
+  ? new BusyNotifier(new DiscordNotify(discordWebhook))
+  : new NullNotifier();
 
 app.use(cors());
 
@@ -65,12 +149,15 @@ app.post('/busy', bodyParser.json(), (req, res) => {
   let duration = parseDuration(req.body.duration || -1, 'ms');
   expiration = now() + duration;
   statusManager.activate();
+  if (req.body.notify !== false)
+    notifier.setBusy(duration, { expiration, url: liveSiteUrl });
   res.status(201).json(payload());
 });
 
 app.delete('/busy', (req, res) => {
   expiration = 0;
   statusManager.cancel();
+  notifier.clearBusy();
   res.json(payload());
 });
 
