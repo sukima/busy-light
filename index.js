@@ -91,7 +91,7 @@ class DiscordNotify {
   async send(payload) {
     let url = new URL(this.url);
     url.searchParams.append('wait', true);
-    console.log('sending webhook');
+    this.retract();
 
     try {
       let res = await fetch(url, {
@@ -101,7 +101,6 @@ class DiscordNotify {
       });
       let { id } = await res.json();
       this.messageId = id;
-      console.log(`sent ${id}`);
     } catch (error) {
       console.log(error);
       this.messageId = null;
